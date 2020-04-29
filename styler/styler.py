@@ -1,7 +1,9 @@
 from aqt import gui_hooks
 from aqt.editor import Editor
 
-from typing import Dict, List, Tuple
+from operator import itemgetter
+from re import compile as re_compile
+from typing import Any, Dict, List, Tuple
 
 
 def on_style(editor : Editor):
@@ -48,26 +50,52 @@ def css_props_from_text(props_text : str) -> Dict[str, str]:
     return props
 
 
-BODY_CLASS = '.card'
+BODY_CLASS = 'card'
+TEMPLATES_KEY = 'tmpls'
+FRONT_SIDE_KEY = 'qfmt'
+BACK_SIDE_KEY = 'afmt'
+
+CARD_ORD = 0  # TODO: Implement card switching
+
+# TODO : Skip commented lines
+RE_CSS_CLASS = re_compile("\.(?P<class>\w+)\s*\{\s*(?P<props>[^\}]*)\}")
 
 def style_note_fields(editor : Editor):
     note_css : str = editor.note.model()['css']
     note_fields : List[str] = editor.note.keys()
 
-    i = note_css.find(BODY_CLASS)
-    if i < 0:
-        return
+    card_template : Dict[str, Any] = editor.note.model()[TEMPLATES_KEY][CARD_ORD]
 
-    body_style_begin = note_css.find('{', i + len(BODY_CLASS))
-    body_style_end = note_css.find('}', body_style_begin+1)
+    front_side, back_side = itemgetter(FRONT_SIDE_KEY, BACK_SIDE_KEY)(card_template)
 
-    props = css_props_from_text(note_css[body_style_begin+1:body_style_end])
+    full_card = f"<div>{front_side}<br>{back_side}</div>"
 
+    # TODO: Support type selectors and its combinations with class
+    css_rules = {t[0] : css_props_from_text(t[1]) for t in RE_CSS_CLASS.findall(note_css)}
+
+    # TODO: Support multiple class selection
     editor.web.eval(
 f'''
-        let body_style = {str(props)};
-        for (let i = 0; i < {len(note_fields)}; ++i) {{
-            $(`#f${{i}}`).css(body_style)
+        let card = $(`{full_card}`)
+        let css = {str(css_rules)}
+        let body_css_rule = css["{BODY_CLASS}"];
+        let fields = {str(note_fields)};
+        for (let i = 0; i < fields.length; ++i) {{
+            let field = $(`#f${{i}}`);
+            let field_name = fields[i];
+            
+            if (body_css_rule)
+                field.css(body_css_rule);
+
+            let elem = card.find(`div:contains("{{{{${{field_name}}}}}}")`);
+
+            let elem_class = elem.attr("class");
+            if (!elem_class)
+                continue;
+
+            let css_rule = css[elem_class]
+            if (css_rule)
+                field.css(css_rule);
         }}
 '''
     )
