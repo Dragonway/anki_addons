@@ -6,27 +6,6 @@ from re import compile as re_compile
 from typing import Any, Dict, List, Tuple
 
 
-def on_style(editor : Editor):
-    pass
-
-
-def add_styler_button(buttons : List[str], editor : Editor):
-    editor._links['style'] = on_style
-    buttons.append(
-        editor._addButton(
-            icon='', # TODO: Create some icon
-            cmd='style',
-            tip='Set style (Ctrl+S)'
-        ),
-    )
-
-
-def add_styler_shortcut(shortcuts : List[Tuple], _ : Editor):
-    shortcuts.append(
-        ("Ctrl+S", on_style)
-    )
-
-
 BODY_CLASS = 'card'
 
 TEMPLATES_KEY = 'tmpls'
@@ -36,6 +15,7 @@ BACK_SIDE_KEY = 'afmt'
 STYLE_ELEM_ID = '__styler_note_css'
 
 CARD_ORD = 0  # TODO: Implement card switching
+
 
 def style_note_fields(editor : Editor):
     note_css : str = editor.note.model()['css']
@@ -72,6 +52,27 @@ f'''
         }}
     }}
 '''
+    )
+
+
+def on_style(editor : Editor):
+    pass
+
+
+def add_styler_button(buttons : List[str], editor : Editor):
+    editor._links['style'] = on_style
+    buttons.append(
+        editor._addButton(
+            icon='', # TODO: Create some icon
+            cmd='style',
+            tip='Set style (Ctrl+S)'
+        ),
+    )
+
+
+def add_styler_shortcut(shortcuts : List[Tuple], _ : Editor):
+    shortcuts.append(
+        ("Ctrl+S", on_style)
     )
 
 
