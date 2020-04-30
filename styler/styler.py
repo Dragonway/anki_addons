@@ -28,9 +28,12 @@ def add_styler_shortcut(shortcuts : List[Tuple], _ : Editor):
 
 
 BODY_CLASS = 'card'
+
 TEMPLATES_KEY = 'tmpls'
 FRONT_SIDE_KEY = 'qfmt'
 BACK_SIDE_KEY = 'afmt'
+
+STYLE_ELEM_ID = '__styler_note_css'
 
 CARD_ORD = 0  # TODO: Implement card switching
 
@@ -48,7 +51,12 @@ def style_note_fields(editor : Editor):
 f'''
     {{
         let card = $(`{full_card}`);
-        $("head").append(`<style type="text/css">{note_css}</style>`);
+
+        var note_style_elem = $("#{STYLE_ELEM_ID}");
+        if (note_style_elem.length)
+            note_style_elem.text(`{note_css}`);
+        else
+            $("head").append(`<style id="{STYLE_ELEM_ID}" type="text/css">{note_css}</style>`);
 
         let fields = {str(note_fields)};
         for (let i = 0; i < fields.length; ++i) {{
