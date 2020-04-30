@@ -46,6 +46,7 @@ def style_note_fields(editor : Editor):
 
     editor.web.eval(
 f'''
+    {{
         let card = $(`{full_card}`);
         $("head").append(`<style type="text/css">{note_css}</style>`);
 
@@ -61,6 +62,7 @@ f'''
             
             field.addClass(elem_class);
         }}
+    }}
 '''
     )
 
