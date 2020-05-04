@@ -11,6 +11,7 @@ TEMPLATES_KEY = 'tmpls'
 FRONT_SIDE_KEY = 'qfmt'
 BACK_SIDE_KEY = 'afmt'
 
+STYLE_ELEM_ID = '__styler_note_css'
 CARD_ORD = 0  # TODO: Implement card switching
 
 
@@ -38,6 +39,8 @@ def add_styler_scripts_on_page(web_content : WebContent, context):
     addon_pkg = mw.addonManager.addonFromModule(__name__)
 
     web_content.js.append(f"/_addons/{addon_pkg}/web/styler.js")
+
+    web_content.head += f'<style id="{STYLE_ELEM_ID}" type="text/css"></style>'
 
 
 def on_style(editor : Editor):

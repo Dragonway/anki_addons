@@ -6,11 +6,7 @@ namespace StylerAddon {
     export function styleNoteFields(full_card_html: string, note_css: string, note_fields: string[]): void {
         let card = $(full_card_html);
 
-        var note_style_elem = $(`#${STYLE_ELEM_ID}`);
-        if (note_style_elem.length)
-            note_style_elem.text(note_css);
-        else
-            $("head").append(`<style id="${STYLE_ELEM_ID}" type="text/css">${note_css}</style>`);
+        $(`#${STYLE_ELEM_ID}`).text(note_css);
 
         for (let i = 0; i < note_fields.length; ++i) {
             let field = $(`#f${i}`);
