@@ -1,18 +1,15 @@
-from aqt import gui_hooks
+from aqt import gui_hooks, mw
 from aqt.editor import Editor
+from aqt.webview import WebContent
 
 from operator import itemgetter
 from re import compile as re_compile
 from typing import Any, Dict, List, Tuple
 
 
-BODY_CLASS = 'card'
-
 TEMPLATES_KEY = 'tmpls'
 FRONT_SIDE_KEY = 'qfmt'
 BACK_SIDE_KEY = 'afmt'
-
-STYLE_ELEM_ID = '__styler_note_css'
 
 CARD_ORD = 0  # TODO: Implement card switching
 
@@ -29,30 +26,18 @@ def style_note_fields(editor : Editor):
 
     editor.web.eval(
 f'''
-    {{
-        let card = $(`{full_card}`);
-
-        var note_style_elem = $("#{STYLE_ELEM_ID}");
-        if (note_style_elem.length)
-            note_style_elem.text(`{note_css}`);
-        else
-            $("head").append(`<style id="{STYLE_ELEM_ID}" type="text/css">{note_css}</style>`);
-
-        let fields = {str(note_fields)};
-        for (let i = 0; i < fields.length; ++i) {{
-            let field = $(`#f${{i}}`);
-            let field_name = fields[i];
-            
-            field.addClass("{BODY_CLASS}");
-
-            let elem = card.find(`div:contains("{{{{${{field_name}}}}}}")`);
-            let elem_class = elem.attr("class");
-            
-            field.addClass(elem_class);
-        }}
-    }}
+        StylerAddon.styleNoteFields(`{full_card}`, `{note_css}`, {str(note_fields)});
 '''
     )
+
+
+def add_styler_scripts_on_page(web_content : WebContent, context):
+    if not isinstance(context, Editor):
+        return
+
+    addon_pkg = mw.addonManager.addonFromModule(__name__)
+
+    web_content.js.append(f"/_addons/{addon_pkg}/web/styler.js")
 
 
 def on_style(editor : Editor):
@@ -76,6 +61,10 @@ def add_styler_shortcut(shortcuts : List[Tuple], _ : Editor):
     )
 
 
+mw.addonManager.setWebExports(__name__, r"web/.*(js)")
+
 gui_hooks.editor_did_init_buttons.append(cb=add_styler_button)
 gui_hooks.editor_did_init_shortcuts.append(cb=add_styler_shortcut)
 gui_hooks.editor_did_load_note.append(cb=style_note_fields)
+
+gui_hooks.webview_will_set_content.append(cb=add_styler_scripts_on_page)
