@@ -1,0 +1,17 @@
+{
+  "files": [
+    "ts/styler.ts"
+  ],
+  "compilerOptions": {
+    "target": "ES2019",
+    "declaration": false,
+    "rootDir": "./ts",
+    "outDir": "./web",
+    "types": ["jquery"],
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true
+  }
+}
