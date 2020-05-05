@@ -3,24 +3,25 @@ namespace StylerAddon {
     const BODY_CLASS    = 'card';
     const STYLE_ELEM_ID = '__styler_note_css';
 
-    export function styleNoteFields(full_card_html: string, note_css: string, note_fields: string[]): void {
-        let card = $(full_card_html);
+    export function styleNoteFields(fullCardHtml: string, noteCss: string, noteFields: string[]): void {
+        let card = $(fullCardHtml);
 
-        $(`#${STYLE_ELEM_ID}`).text(note_css);
+        $(`#${STYLE_ELEM_ID}`).text(noteCss);
 
-        for (let i = 0; i < note_fields.length; ++i) {
+        for (let i = 0; i < noteFields.length; ++i) {
             let field = $(`#f${i}`);
-            let field_name = note_fields[i];
+            let fieldName = noteFields[i];
 
             field.addClass(BODY_CLASS);
 
-            let elem = card.find(`div:contains("{{${field_name}}}")`);
+            let elem = card.find(`div:contains("{{${fieldName}}}")`);
 
-            let elem_class = elem.attr("class");
-            if (elem_class === undefined)
+            let elemClass = elem.attr("class");
+            if (elemClass === undefined)
                 continue;
 
-            field.addClass(elem_class);
+            field.addClass(elemClass);
         }
     }
+
 }
