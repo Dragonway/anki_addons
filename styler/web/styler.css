@@ -1,0 +1,18 @@
+.__styler_drop_down_list {
+    position: absolute;
+    min-width: 60px;
+    z-index: 10;
+}
+
+.__styler_select_list:after {
+    content: " ⯆";
+}
+
+.__styler_select_list.__styler_select_list_unfolded:after {
+    content: " ⯅";
+}
+
+.__styler_drop_down_list div {
+    cursor: default;
+    user-select: none;
+}
