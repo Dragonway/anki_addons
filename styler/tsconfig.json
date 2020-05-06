@@ -9,8 +9,6 @@
     "outDir": "./web",
     "types": ["jquery"],
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true
   }
