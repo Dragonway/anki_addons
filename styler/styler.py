@@ -40,6 +40,25 @@ def add_styler_scripts_on_page(web_content : WebContent, context):
 
     web_content.js.append(f"/_addons/{addon_pkg}/web/styler.js")
 
+    web_content.head += '''
+    <style type="text/css">
+    .__styler_drop_down_list {
+        position: absolute;
+        min-width: 60px;
+        z-index: 10;
+    }
+    .__styler_select_list:after {
+        content: " \u25BC";
+    }
+    .__styler_select_list.__styler_select_list_unfolded:after {
+        content: " \u25B2";
+    }
+    .__styler_drop_down_list div {
+        cursor: default;
+        user-select: none;
+    }
+    </style>'''
+
     web_content.head += f'<style id="{STYLE_ELEM_ID}" type="text/css"></style>'
 
 
