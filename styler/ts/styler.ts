@@ -114,6 +114,7 @@ namespace StylerAddon {
             $elem.appendTo(parent);
 
             this.element = $elem.get(0);
+            this.model.onUpdate = this.fold.bind(this);
         }
 
         private unfold(this: SelectList<T>): void {
@@ -146,14 +147,14 @@ namespace StylerAddon {
 
             $listbox.focus();
 
-            $element.toggleClass(SELECT_LIST_UNFOLDED_CLASS);
+            $element.toggleClass(SELECT_LIST_UNFOLDED_CLASS, true);
         }
 
         private fold(this: SelectList<T>): void {
             let $element = $(this.element);
 
             $($element.data('listbox') as HTMLElement).remove();
-            $element.toggleClass(SELECT_LIST_UNFOLDED_CLASS);
+            $element.toggleClass(SELECT_LIST_UNFOLDED_CLASS, false);
         }
 
         private optionFocused(this: HTMLElement): void {
