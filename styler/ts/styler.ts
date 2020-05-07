@@ -53,9 +53,15 @@ namespace StylerAddon {
     class SelectModel<T extends ConvertibleToString> {
         private values: T[] = [];
         private converter?: (x: T) => string;
+        private updateCb?: () => void
 
-        constructor(converter?: (x: T) => string) {
+        constructor(converter?: (x: T) => string, updateCb? : () => void) {
             this.converter = converter;
+            this.updateCb = updateCb;
+        }
+
+        set onUpdate(cb: () => void) {
+            this.updateCb = cb;
         }
 
         get length(this: SelectModel<T>): number {
@@ -64,14 +70,17 @@ namespace StylerAddon {
 
         append(this: SelectModel<T>, value: T): void {
             this.values.push(value);
+            this.updateCb?.();
         }
 
         extend(this: SelectModel<T>, values: T[]): void {
             this.values.push.apply(this.values, values);
+            this.updateCb?.();
         }
 
         clear(this: SelectModel<T>): void {
             this.values = [];
+            this.updateCb?.();
         }
 
         toString(this: SelectModel<T>): string {
