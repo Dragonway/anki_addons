@@ -58,17 +58,33 @@ namespace StylerAddon {
             this.converter = converter;
         }
 
-        get length(): number { return this.values.length; }
+        get length(this: SelectModel<T>): number {
+            return this.values.length;
+        }
 
-        append(value: T): void      { this.values.push(value); }
-        extend(values: T[]): void   { this.values.push.apply(this.values, values); }
+        append(this: SelectModel<T>, value: T): void {
+            this.values.push(value);
+        }
 
-        clear(): void { this.values = []; }
+        extend(this: SelectModel<T>, values: T[]): void {
+            this.values.push.apply(this.values, values);
+        }
 
-        toString(): string { return this.values.toString(); }
+        clear(this: SelectModel<T>): void {
+            this.values = [];
+        }
 
-        get(index: number): T           { return this.values[index]; }
-        getStr(index: number): string   { return this.converter?.(this.values[index]) ?? this.values[index].toString(); }
+        toString(this: SelectModel<T>): string {
+            return this.values.toString();
+        }
+
+        get(this: SelectModel<T>, index: number): T {
+            return this.values[index];
+        }
+
+        getStr(this: SelectModel<T>, index: number): string {
+            return this.converter?.(this.values[index]) ?? this.values[index].toString();
+        }
     }
 
 
