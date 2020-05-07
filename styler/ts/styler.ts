@@ -135,14 +135,14 @@ namespace StylerAddon {
         }
 
         set currentIndex(index: number) {
-            this.fold();
-
             let val = this.model.get(index);
 
             this.button.textContent = val.toString();
             this.current = index;
 
             this.chooseCb?.(val);
+
+            this.fold();
         }
 
         private unfold(this: SelectList<T>): void {
