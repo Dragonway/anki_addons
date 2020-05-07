@@ -49,6 +49,8 @@ namespace StylerAddon {
         toString: () => string
     }
 
+    type HTMLElementClickEvent<T> = JQuery.ClickEvent<HTMLElement, T, HTMLElement, HTMLElement>;
+
 
     class SelectModel<T extends ConvertibleToString> {
         private values: T[] = [];
@@ -97,7 +99,7 @@ namespace StylerAddon {
     }
 
 
-    class SelectList<T> {
+    class SelectList<T extends ConvertibleToString> {
         private button: HTMLElement;
         private listbox: HTMLElement;
 
@@ -126,6 +128,15 @@ namespace StylerAddon {
             this.model.onUpdate = this.fold.bind(this);
         }
 
+        set currentIndex(index: number) {
+            this.fold();
+
+            let val = this.model.get(index);
+
+            this.button.textContent = val.toString();
+            this.current = index;
+        }
+
         private unfold(this: SelectList<T>): void {
             let $button = $(this.button);
             let $listbox = $(this.listbox);
@@ -133,7 +144,8 @@ namespace StylerAddon {
             $listbox.empty();
             for(let i = 0; i < this.model.length; ++i) {
                 let $option = $(`<div>${this.model.getStr(i)}</div>`)
-                                .hover(SelectList.optionFocused, SelectList.optionUnfocused);
+                                .hover(SelectList.optionFocused, SelectList.optionUnfocused)
+                                .click(i, this.choose.bind(this));
 
                 $listbox.append($option);
             }
@@ -153,6 +165,10 @@ namespace StylerAddon {
         private fold(this: SelectList<T>): void {
             $(this.listbox).detach();
             $(this.button).toggleClass(SELECT_LIST_UNFOLDED_CLASS, false);
+        }
+
+        private choose(this: SelectList<T>, event: HTMLElementClickEvent<number>): void {
+            this.currentIndex = event.data;
         }
 
         private static optionFocused(this: HTMLElement): void {
