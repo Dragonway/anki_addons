@@ -98,7 +98,9 @@ namespace StylerAddon {
 
 
     class SelectList<T> {
-        private element: HTMLElement;
+        private button: HTMLElement;
+        private listbox: HTMLElement;
+
         private model: SelectModel<T>;
         private current: number;
 
@@ -107,54 +109,52 @@ namespace StylerAddon {
             this.current = current;
 
             let value = this.model.getStr(this.current);
-            let $elem = $(`<button class="${SELECT_LIST_CLASS}">${value}</button>`);
+            let $button  = $(`<button class="${SELECT_LIST_CLASS}">${value}</button>`)
+                            .click(this.unfold.bind(this))
+                            .appendTo(parent);
 
-            $elem.click(this.unfold.bind(this));
+            let $listbox = $(`<div tabindex="-1" class="${DROP_DOWN_LIST_CLASS}"></div>`)
+                            .blur(this.fold.bind(this))
+                            .css({
+                                backgroundColor:    $button.css('backgroundColor'),
+                                boxShadow:          $button.css('boxShadow'),
+                            });
 
-            $elem.appendTo(parent);
+            this.button  = $button.get(0);
+            this.listbox = $listbox.get(0);
 
-            this.element = $elem.get(0);
             this.model.onUpdate = this.fold.bind(this);
         }
 
         private unfold(this: SelectList<T>): void {
-            let $element = $(this.element);
+            let $button = $(this.button);
+            let $listbox = $(this.listbox);
 
-            let $listbox = $(`<div tabindex="-1" class="${DROP_DOWN_LIST_CLASS}"></div>`);
-
+            $listbox.empty();
             for(let i = 0; i < this.model.length; ++i) {
                 let $option = $(`<div>${this.model.getStr(i)}</div>`);
 
-                $option.css('padding', $element.css('padding'));
+                $option.css('padding', $button.css('padding'));
                 $option.hover(this.optionFocused, this.optionUnfocused);
 
                 $listbox.append($option);
             }
-            $listbox.blur(this.fold.bind(this));
 
-            $element.data('listbox', $listbox.get());
             $(document.body).append($listbox);
 
-            $listbox.css({
-                backgroundColor:    $element.css('backgroundColor'),
-                boxShadow:          $element.css('boxShadow'),
-            });
-
-            let pos = $element.offset()!;
-            pos.top += $element.outerHeight()!;
+            let pos = $button.offset()!;
+            pos.top += $button.outerHeight()!;
 
             $listbox.offset(pos);
 
             $listbox.focus();
 
-            $element.toggleClass(SELECT_LIST_UNFOLDED_CLASS, true);
+            $button.toggleClass(SELECT_LIST_UNFOLDED_CLASS, true);
         }
 
         private fold(this: SelectList<T>): void {
-            let $element = $(this.element);
-
-            $($element.data('listbox') as HTMLElement).remove();
-            $element.toggleClass(SELECT_LIST_UNFOLDED_CLASS, false);
+            $(this.listbox).detach();
+            $(this.button).toggleClass(SELECT_LIST_UNFOLDED_CLASS, false);
         }
 
         private optionFocused(this: HTMLElement): void {
