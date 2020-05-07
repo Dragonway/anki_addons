@@ -15,4 +15,5 @@
 .__styler_drop_down_list div {
     cursor: default;
     user-select: none;
+    padding: 3px;
 }

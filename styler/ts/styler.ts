@@ -132,10 +132,8 @@ namespace StylerAddon {
 
             $listbox.empty();
             for(let i = 0; i < this.model.length; ++i) {
-                let $option = $(`<div>${this.model.getStr(i)}</div>`);
-
-                $option.css('padding', $button.css('padding'));
-                $option.hover(SelectList.optionFocused, SelectList.optionUnfocused);
+                let $option = $(`<div>${this.model.getStr(i)}</div>`)
+                                .hover(SelectList.optionFocused, SelectList.optionUnfocused);
 
                 $listbox.append($option);
             }
