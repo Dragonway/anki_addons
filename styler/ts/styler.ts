@@ -106,6 +106,8 @@ namespace StylerAddon {
         private model: SelectModel<T>;
         private current: number;
 
+        private chooseCb?: (i: T) => void;
+
         constructor(parent: JQuery<HTMLElement>, model: SelectModel<T>, current: number = 0) {
             this.model = model;
             this.current = current;
@@ -128,6 +130,10 @@ namespace StylerAddon {
             this.model.onUpdate = this.fold.bind(this);
         }
 
+        set onChoose(cb: (i: T) => void) {
+            this.chooseCb = cb;
+        }
+
         set currentIndex(index: number) {
             this.fold();
 
@@ -135,6 +141,8 @@ namespace StylerAddon {
 
             this.button.textContent = val.toString();
             this.current = index;
+
+            this.chooseCb?.(val);
         }
 
         private unfold(this: SelectList<T>): void {
