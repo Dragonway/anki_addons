@@ -135,7 +135,7 @@ namespace StylerAddon {
                 let $option = $(`<div>${this.model.getStr(i)}</div>`);
 
                 $option.css('padding', $button.css('padding'));
-                $option.hover(this.optionFocused, this.optionUnfocused);
+                $option.hover(SelectList.optionFocused, SelectList.optionUnfocused);
 
                 $listbox.append($option);
             }
@@ -157,14 +157,14 @@ namespace StylerAddon {
             $(this.button).toggleClass(SELECT_LIST_UNFOLDED_CLASS, false);
         }
 
-        private optionFocused(this: HTMLElement): void {
+        private static optionFocused(this: HTMLElement): void {
             let $this = $(this);
             let bgColor = $this.parent().css('backgroundColor');
 
             $this.css('background', shadeRgb(0.3, bgColor));
         }
 
-        private optionUnfocused(this: HTMLElement): void {
+        private static optionUnfocused(this: HTMLElement): void {
             $(this).css('background', "rgba(0,0,0,0)");
         }
     }
