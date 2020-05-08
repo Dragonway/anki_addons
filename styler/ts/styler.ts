@@ -76,7 +76,7 @@ namespace StylerAddon {
         }
 
         extend(this: SelectModel<T>, values: T[]): void {
-            this.values.push.apply(this.values, values);
+            this.values.push(...values);
             this.updateCb?.();
         }
 
