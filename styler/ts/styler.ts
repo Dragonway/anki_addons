@@ -70,8 +70,8 @@ namespace StylerAddon {
             return this.values.length;
         }
 
-        append(this: SelectModel<T>, value: T): void {
-            this.values.push(value);
+        append(this: SelectModel<T>, ...values: T[]): void {
+            this.values.push(...values);
             this.updateCb?.();
         }
 
