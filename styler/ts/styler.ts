@@ -80,6 +80,11 @@ namespace StylerAddon {
             this.updateCb?.();
         }
 
+        refill(this: SelectModel<T>, values: T[]): void {
+            this.values = [...values];
+            this.updateCb?.();
+        }
+
         clear(this: SelectModel<T>): void {
             this.values = [];
             this.updateCb?.();
