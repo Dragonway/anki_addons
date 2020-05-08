@@ -118,11 +118,7 @@ namespace StylerAddon {
                             .appendTo(parent);
 
             let $listbox = $(`<div tabindex="-1" class="${DROP_DOWN_LIST_CLASS}"></div>`)
-                            .blur(this.fold.bind(this))
-                            .css({
-                                backgroundColor:    $button.css('backgroundColor'),
-                                boxShadow:          $button.css('boxShadow'),
-                            });
+                            .blur(this.fold.bind(this));
 
             this.button  = $button.get(0);
             this.listbox = $listbox.get(0);
@@ -150,6 +146,11 @@ namespace StylerAddon {
             let $listbox = $(this.listbox);
 
             $listbox.empty();
+            $listbox.css({
+                backgroundColor:    $button.css('backgroundColor'),
+                boxShadow:          $button.css('boxShadow'),
+            });
+
             for(let i = 0; i < this.model.length; ++i) {
                 let $option = $(`<div>${this.model.getStr(i)}</div>`)
                                 .hover(SelectList.optionFocused, SelectList.optionUnfocused)
