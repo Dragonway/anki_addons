@@ -3,36 +3,32 @@ from aqt.editor import Editor
 from aqt.webview import WebContent
 
 from operator import itemgetter
+from json import dumps as to_json
 from re import compile as re_compile
 from typing import Any, Dict, List, Tuple
 
 
-TEMPLATES_KEY = 'tmpls'
-FRONT_SIDE_KEY = 'qfmt'
-BACK_SIDE_KEY = 'afmt'
+TEMPLATES_KEY   = 'tmpls'
+FRONT_SIDE_KEY  = 'qfmt'
+BACK_SIDE_KEY   = 'afmt'
 
-STYLE_ELEM_ID = '__styler_note_css'
-CARD_ORD = 0  # TODO: Implement card switching
+STYLE_ELEM_ID   = '__styler_note_css'
+
 
 
 def style_note_fields(editor : Editor):
-    note_css : str = editor.note.model()['css']
-    note_fields : List[str] = editor.note.keys()
-
-    card_template : Dict[str, Any] = editor.note.model()[TEMPLATES_KEY][CARD_ORD]
-
-    front_side, back_side = itemgetter(FRONT_SIDE_KEY, BACK_SIDE_KEY)(card_template)
-
-    full_card = f"<div>{front_side}<br>{back_side}</div>"
+    note_css : str                          = editor.note.model()['css']
+    note_fields : List[str]                 = editor.note.keys()
+    note_templates : List[Dict[str, Any]]   = editor.note.model()[TEMPLATES_KEY]
 
     editor.web.eval(
 f'''
-        StylerAddon.styleNoteFields(`{full_card}`, `{note_css}`, {str(note_fields)});
+        StylerAddon.loadNote({to_json(note_templates)}, `{note_css}`, {str(note_fields)});
 '''
     )
 
 
-def add_styler_scripts_on_page(web_content : WebContent, context):
+def add_styler_scripts_on_page(web_content : WebContent, context: Any):
     if not isinstance(context, Editor):
         return
 

@@ -2,6 +2,7 @@ namespace StylerAddon {
 
     // anki specific consts
     const BODY_CLASS                    = 'card';
+    const TOP_BUTTONS_ID                = 'topbutsleft';
 
     // styler consts
     const STYLE_ELEM_ID                 = '__styler_note_css';
@@ -10,7 +11,40 @@ namespace StylerAddon {
     const DROP_DOWN_LIST_CLASS          = '__styler_drop_down_list';
 
 
-    export function styleNoteFields(fullCardHtml: string, noteCss: string, noteFields: string[]): void {
+    interface CardTemplate {
+        'name': string;
+        'ord': number;
+
+        'qfmt': string;
+        'afmt': string;
+    }
+
+    let noteCss: string;
+    let noteFields: string[];
+    let cardSelect: SelectList<CardTemplate>;
+
+    // create cardSelect on page loading
+    $(() => {
+        const getCardName = (card: CardTemplate): string => { return card.name; };
+
+        let model = new SelectModel<CardTemplate>(getCardName);
+        cardSelect = new SelectList($(`#${TOP_BUTTONS_ID}`), model);
+
+        cardSelect.onChoose = (card: CardTemplate | undefined): void => {
+            if (card === undefined)
+                return;
+
+            styleNoteFields(`<div>${card.qfmt}${card.afmt}</div>`);
+        }
+    })
+
+    export function loadNote(noteTemplates: CardTemplate[], noteCss_: string, noteFields_: string[]): void {
+        noteCss = noteCss_;
+        noteFields = noteFields_;
+        cardSelect.values.refill(noteTemplates);
+    }
+
+    function styleNoteFields(fullCardHtml: string): void {
         let card = $(fullCardHtml);
 
         $(`#${STYLE_ELEM_ID}`).text(noteCss);
