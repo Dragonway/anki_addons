@@ -1,6 +1,9 @@
 .__styler_drop_down_list {
     position: absolute;
     min-width: 60px;
+    max-height: 120px;
+    overflow: hidden;
+    overflow-y: scroll;
     z-index: 10;
 }
 
