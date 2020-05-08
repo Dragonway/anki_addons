@@ -55,15 +55,20 @@ namespace StylerAddon {
     class SelectModel<T extends ConvertibleToString> {
         private values: T[] = [];
         private converter?: (x: T) => string;
-        private updateCb?: () => void
 
-        constructor(converter?: (x: T) => string, updateCb? : () => void) {
+        private insertCb?: (begin: number, count: number) => void
+        private resetCb?: () => void
+
+        constructor(converter?: (x: T) => string) {
             this.converter = converter;
-            this.updateCb = updateCb;
         }
 
-        set onUpdate(cb: () => void) {
-            this.updateCb = cb;
+        set onInsert(cb: (begin: number, count: number) => void) {
+            this.insertCb = cb;
+        }
+
+        set onReset(cb: () => void) {
+            this.resetCb = cb;
         }
 
         get length(this: SelectModel<T>): number {
@@ -71,23 +76,29 @@ namespace StylerAddon {
         }
 
         append(this: SelectModel<T>, ...values: T[]): void {
+            let begin = this.values.length;
+            let count = values.length;
+
             this.values.push(...values);
-            this.updateCb?.();
+            this.insertCb?.(begin, count);
         }
 
         extend(this: SelectModel<T>, values: T[]): void {
+            let begin = this.values.length;
+            let count = values.length;
+
             this.values.push(...values);
-            this.updateCb?.();
+            this.insertCb?.(begin, count);
         }
 
         refill(this: SelectModel<T>, values: T[]): void {
             this.values = [...values];
-            this.updateCb?.();
+            this.resetCb?.();
         }
 
         clear(this: SelectModel<T>): void {
             this.values = [];
-            this.updateCb?.();
+            this.resetCb?.();
         }
 
         toString(this: SelectModel<T>): string {
@@ -111,14 +122,13 @@ namespace StylerAddon {
         private model: SelectModel<T>;
         private current: number;
 
-        private chooseCb?: (i: T) => void;
+        private chooseCb?: (i: T | undefined) => void;
 
         constructor(parent: JQuery<HTMLElement>, model: SelectModel<T>, current: number = 0) {
             this.model = model;
             this.current = current;
 
-            let value = this.model.getStr(this.current);
-            let $button  = $(`<button class="${SELECT_LIST_CLASS}">${value}</button>`)
+            let $button  = $(`<button class="${SELECT_LIST_CLASS}"></button>`)
                             .click(this.unfold.bind(this))
                             .appendTo(parent);
 
@@ -128,22 +138,50 @@ namespace StylerAddon {
             this.button  = $button.get(0);
             this.listbox = $listbox.get(0);
 
-            this.model.onUpdate = this.fold.bind(this);
+            this.model.onInsert = this.updateCurrentIndex.bind(this);
+            this.model.onReset = this.reset.bind(this);
+
+            this.updateCurrentValue();
         }
 
-        set onChoose(cb: (i: T) => void) {
+        set onChoose(cb: (i: T | undefined) => void) {
             this.chooseCb = cb;
         }
 
         set currentIndex(index: number) {
-            let val = this.model.get(index);
-
-            this.button.textContent = val.toString();
             this.current = index;
+
+            let val = this.updateCurrentValue();
 
             this.chooseCb?.(val);
 
             this.fold();
+        }
+
+        private updateCurrentValue(this: SelectList<T>): T | undefined {
+            if (this.current < 0 || this.current >= this.model.length) {
+                this.current = 0;
+                this.button.textContent = '';
+
+                return undefined;
+            }
+
+            let val = this.model.get(this.current);
+            this.button.textContent = val.toString();
+
+            return val;
+        }
+
+        private updateCurrentIndex(this: SelectList<T>, begin: number, count: number): void {
+            if (this.current < begin)
+                return;
+
+            this.currentIndex = this.current + count;
+        }
+
+        private reset(this: SelectList<T>): void {
+            this.current = 0; // reset current
+            this.updateCurrentValue();
         }
 
         private unfold(this: SelectList<T>): void {
