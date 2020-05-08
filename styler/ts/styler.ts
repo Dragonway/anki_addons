@@ -177,6 +177,7 @@ namespace StylerAddon {
             $listbox.css({
                 backgroundColor:    $button.css('backgroundColor'),
                 boxShadow:          $button.css('boxShadow'),
+                display:            'block',
             });
 
             for(let i = 0; i < this.model.length; ++i) {
@@ -200,7 +201,7 @@ namespace StylerAddon {
         }
 
         private fold(this: SelectList<T>): void {
-            $(this.listbox).detach();
+            $(this.listbox).css('display', 'none');
             $(this.button).toggleClass(SELECT_LIST_UNFOLDED_CLASS, false);
         }
 
