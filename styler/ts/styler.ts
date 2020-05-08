@@ -133,28 +133,27 @@ namespace StylerAddon {
         set currentIndex(index: number) {
             this.current = index;
 
-            let val = this.updateCurrentValue();
-
             this.fold();
-            this.chooseCb?.(val);
+            this.updateCurrentValue();
         }
 
         get values(): SelectModel<T> {
             return this.model;
         }
 
-        private updateCurrentValue(this: SelectList<T>): T | undefined {
+        private updateCurrentValue(this: SelectList<T>): void {
             if (this.current < 0 || this.current >= this.model.length) {
                 this.current = 0;
                 this.button.textContent = '';
 
-                return undefined;
+                this.chooseCb?.(undefined);
+                return;
             }
 
             let val = this.model.get(this.current);
             this.button.textContent = this.model.getStr(this.current);
 
-            return val;
+            this.chooseCb?.(val);
         }
 
         private updateCurrentIndex(this: SelectList<T>, begin: number, count: number): void {
@@ -166,6 +165,7 @@ namespace StylerAddon {
 
         private reset(this: SelectList<T>): void {
             this.current = 0; // reset current
+
             this.updateCurrentValue();
         }
 
