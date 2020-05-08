@@ -162,7 +162,7 @@ namespace StylerAddon {
             }
 
             let val = this.model.get(this.current);
-            this.button.textContent = val.toString();
+            this.button.textContent = this.model.getStr(this.current);
 
             return val;
         }
