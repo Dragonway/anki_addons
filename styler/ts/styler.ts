@@ -135,9 +135,8 @@ namespace StylerAddon {
 
             let val = this.updateCurrentValue();
 
-            this.chooseCb?.(val);
-
             this.fold();
+            this.chooseCb?.(val);
         }
 
         private updateCurrentValue(this: SelectList<T>): T | undefined {
