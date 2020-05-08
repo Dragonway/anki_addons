@@ -139,6 +139,10 @@ namespace StylerAddon {
             this.chooseCb?.(val);
         }
 
+        get values(): SelectModel<T> {
+            return this.model;
+        }
+
         private updateCurrentValue(this: SelectList<T>): T | undefined {
             if (this.current < 0 || this.current >= this.model.length) {
                 this.current = 0;
