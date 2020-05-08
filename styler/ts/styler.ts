@@ -76,11 +76,7 @@ namespace StylerAddon {
         }
 
         append(this: SelectModel<T>, ...values: T[]): void {
-            let begin = this.values.length;
-            let count = values.length;
-
-            this.values.push(...values);
-            this.insertCb?.(begin, count);
+            this.extend(values);
         }
 
         extend(this: SelectModel<T>, values: T[]): void {
@@ -97,8 +93,7 @@ namespace StylerAddon {
         }
 
         clear(this: SelectModel<T>): void {
-            this.values = [];
-            this.resetCb?.();
+            this.refill([]);
         }
 
         toString(this: SelectModel<T>): string {
