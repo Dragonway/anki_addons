@@ -231,12 +231,12 @@ namespace StylerAddon {
 
             $listbox.focus();
 
-            $button.toggleClass(SELECT_LIST_UNFOLDED_CLASS, true);
+            $button.addClass(SELECT_LIST_UNFOLDED_CLASS);
         }
 
         private fold(this: SelectList<T>): void {
             $(this.listbox).css('display', 'none');
-            $(this.button).toggleClass(SELECT_LIST_UNFOLDED_CLASS, false);
+            $(this.button).removeClass(SELECT_LIST_UNFOLDED_CLASS);
         }
 
         private choose(this: SelectList<T>, event: HTMLElementClickEvent<number>): void {
