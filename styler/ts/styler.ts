@@ -211,11 +211,14 @@ namespace StylerAddon {
             $listbox.css({
                 backgroundColor:    $button.css('backgroundColor'),
                 boxShadow:          $button.css('boxShadow'),
+                border:             $button.css('border'),
+                borderRadius:       $button.css('borderRadius'),
                 display:            'block',
             });
 
             for(let i = 0; i < this.model.length; ++i) {
                 let $option = $(`<div>${this.model.getStr(i)}</div>`)
+                                .css('padding', $button.css('padding'))
                                 .hover(SelectList.optionFocused, SelectList.optionUnfocused)
                                 .click(i, this.choose.bind(this));
 
