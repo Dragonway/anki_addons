@@ -4,7 +4,7 @@
     max-height: 120px;
     outline: none;
     overflow: hidden;
-    overflow-y: scroll;
+    overflow-y: auto;
     z-index: 10;
 }
 
