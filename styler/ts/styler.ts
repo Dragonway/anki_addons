@@ -213,6 +213,7 @@ namespace StylerAddon {
                 boxShadow:          $button.css('boxShadow'),
                 border:             $button.css('border'),
                 borderRadius:       $button.css('borderRadius'),
+                minWidth:           $button.css('width'),
                 display:            'block',
             });
 
